@@ -16,8 +16,8 @@ def sort_csv_by_timestamp(input_file, output_file):
 
 if __name__ == "__main__":
     # File paths
-    input_file = '../Location_data/Rahil/Rahil_gnss_data1.csv'
-    output_file = '../Location_data/Rahil/Rahil_sorted_gnss_data1.csv'
+    input_file = '../Location_data/Rahil/Data2/Rahil_gnss_data2.csv'
+    output_file = '../Location_data/Rahil/Data2/Rahil_sorted_gnss_data2.csv'
     
     # Sort the CSV file by Timestamp
     sort_csv_by_timestamp(input_file, output_file)

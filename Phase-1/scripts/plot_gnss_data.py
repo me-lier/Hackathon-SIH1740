@@ -64,8 +64,8 @@ def plot_gnss_data_on_map(data_file, output_map_file):
 
 if __name__ == "__main__":
     # File paths
-    data_file = '../Location_data/Rahil/Rahil_sorted_gnss_data1.csv'
-    output_map_file = '../output/gnss_map.html'
+    data_file = '../Location_data/Rahil/Data2/Rahil_sorted_dub_gnss_data2.csv'
+    output_map_file = '../output/Rahil/Data2/gnss_map.html'
     
     # Plot GNSS data on the map
     plot_gnss_data_on_map(data_file, output_map_file)
