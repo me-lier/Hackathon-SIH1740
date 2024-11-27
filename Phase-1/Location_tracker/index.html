@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Tracker Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="main-container">
+        <h1 id="main-heading">Location Tracker</h1>
+        <div id="coordinates">Your coordinates will appear here....</div>
+        <div class="main-btn">
+            <button class="btn" onclick="startTracking()">Start Tracking</button>
+            <button class="btn" onclick="stopTracking()">Stop Tracking</button>
+            <button class="btn CSV" onclick="downloadCSV()">Download CSV</button>
+        </div>
+    </div>
+
+    <script>
+        let data = [];
+        let trackingInterval;
+        let permissionGiven = false;
+
+        function startTracking() {
+            if (permissionGiven && navigator.geolocation) {
+                trackingInterval = setInterval(() => {
+                    navigator.geolocation.getCurrentPosition(storePosition, showError, {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    });
+                }, 5000); // Update every 5 seconds
+            } else if (!navigator.geolocation) {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function stopTracking() {
+            clearInterval(trackingInterval);
+        }
+
+        function storePosition(position) {
+            const { latitude, longitude } = position.coords;
+            const timestamp = new Date().toISOString();
+            data.push({ latitude, longitude, timestamp });
+            console.log(`Latitude: ${latitude}, Longitude: ${longitude}, Timestamp: ${timestamp}`);
+            document.getElementById('coordinates').innerText = `Latitude: ${latitude}, Longitude: ${longitude}, Timestamp: ${timestamp}`;
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        function downloadCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Latitude,Longitude,Timestamp\n";
+
+            data.forEach(row => {
+                csvContent += `${row.latitude},${row.longitude},${row.timestamp}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "location_data.csv");
+            document.body.appendChild(link); // Required for FF
+            link.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ensure the page is served over HTTPS
+            if (window.location.protocol !== 'https:') {
+                alert("Geolocation requires a secure context (HTTPS). Please serve the page over HTTPS.");
+                return;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        permissionGiven = true;
+                        startTracking(); // Start tracking if permission is granted
+                    },
+                    (error) => {
+                        // Handle errors if the user denies permission
+                        alert("Geolocation permission is required to track your location.");
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        });
+    </script>
+</body>
+
+</html>

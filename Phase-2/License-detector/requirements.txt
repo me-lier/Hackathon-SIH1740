@@ -1,0 +1,5 @@
+opencv-python
+numpy
+plotly
+scikit-image
+pytesseract
